@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NightUAV-Sim | A Synthetic Benchmark for Nighttime UAV 3D Reconstruction</title>
+    <meta name="description" content="NightUAV-Sim: The first synthetic benchmark dataset for nighttime UAV 3D reconstruction with pixel-aligned day-night pairs and complete geometric ground truth.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --bg-card-hover: #22222e;
+            --text-primary: #f0f0f5;
+            --text-secondary: #a0a0b0;
+            --text-muted: #606070;
+            --accent-blue: #4a9eff;
+            --accent-purple: #a855f7;
+            --accent-orange: #f97316;
+            --accent-green: #22c55e;
+            --accent-gradient: linear-gradient(135deg, #4a9eff 0%, #a855f7 50%, #f97316 100%);
+            --border-color: #2a2a35;
+            --font-display: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-display);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 20%, rgba(74, 158, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 50% 50%, rgba(249, 115, 22, 0.04) 0%, transparent 50%);
+        }
+        .abstract-content.fade-in { opacity: 1 !important; transform: none !important; }
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.2), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.4), transparent),
+                radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.2), transparent),
+                radial-gradient(1px 1px at 160px 120px, rgba(255,255,255,0.3), transparent);
+            background-size: 200px 200px;
+            animation: twinkle 8s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0 80px;
+            position: relative;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-badge i {
+            color: var(--accent-orange);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s ease-out 0.1s both;
+        }
+
+        .hero h1 .gradient-text {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 20px rgba(74, 158, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(74, 158, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-blue);
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 80px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 8px 30px rgba(74, 158, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(74, 158, 255, 0.1);
+            border: 1px solid rgba(74, 158, 255, 0.2);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Abstract Section */
+        .abstract-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: var(--text-secondary);
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-purple);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.1);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(168, 85, 247, 0.1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--accent-purple);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Illumination Section */
+        .illumination-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .illumination-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .illumination-card:hover {
+            transform: scale(1.02);
+            border-color: var(--accent-orange);
+        }
+
+        /* .illumination-img {
+            width: 100%;
+            aspect-ratio: 1/5;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        } */
+
+        .illumination-img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: var(--bg-secondary);
+            overflow: hidden;
+        }
+
+        .illumination-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .illumination-label {
+            padding: 12px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Pipeline Section */
+        .pipeline-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 48px;
+            margin-top: 40px;
+        }
+
+        .pipeline-stages {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .pipeline-stage {
+            text-align: center;
+            position: relative;
+        }
+
+        .pipeline-stage::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .pipeline-stage:last-child::after {
+            display: none;
+        }
+
+        .stage-number {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin: 0 auto 16px;
+        }
+
+        .pipeline-stage h4 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .pipeline-stage p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Results Section */
+        .results-tables {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            margin-top: 40px;
+        }
+
+        .result-table-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 32px;
+        }
+
+        .result-table-container h3 {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .highlight-row {
+            background: rgba(74, 158, 255, 0.1);
+        }
+
+        .highlight-row td {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        /* Download Section */
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .download-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 32px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .download-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-green);
+            box-shadow: 0 8px 30px rgba(34, 197, 94, 0.1);
+        }
+
+        .download-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            color: var(--accent-green);
+            margin: 0 auto 20px;
+        }
+
+        .download-card h3 {
+            margin-bottom: 8px;
+        }
+
+        .download-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .download-size {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Citation Section */
+        .citation-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+            max-width: 800px;
+            margin: 40px auto 0;
+        }
+
+        .citation-box pre {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .illumination-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .pipeline-stages {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .pipeline-stage::after {
+                display: none;
+            }
+            .results-tables {
+                grid-template-columns: 1fr;
+            }
+            .download-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .illumination-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .section-title {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="stars"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="nav-logo">NightUAV-Sim</div>
+            <ul class="nav-links">
+                <li><a href="#abstract">Abstract</a></li>
+                <li><a href="#dataset">Dataset</a></li>
+                <li><a href="#download">Download</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-trophy"></i>
+                    IGARSS 2026 Student Competition
+                </div>
+                <h1>
+                    <span class="gradient-text">Reconstructing in the Dark</span><br>
+                    A Synthetic Benchmark for Nighttime UAV 3D Reconstruction
+                </h1>
+                <p class="hero-subtitle">
+                    NightUAV-Sim provides 19,836 high-resolution images with pixel-aligned day-night pairs 
+                    and complete geometric ground truth for advancing nighttime UAV perception research.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#download" class="btn btn-primary">
+                        <i class="fas fa-download"></i>
+                        Download Dataset
+                    </a>
+                    <a href="https://github.com/yourusername/NightUAV-Sim" class="btn btn-secondary" target="_blank">
+                        <i class="fab fa-github"></i>
+                        View on GitHub
+                    </a>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value">19,836</div>
+                        <div class="stat-label">Total Images</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">45MP</div>
+                        <div class="stat-label">Resolution</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Lighting Conditions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">2 km²</div>
+                        <div class="stat-label">Scene Coverage</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Abstract Section -->
+    <section id="abstract">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Abstract</span>
+                <h2 class="section-title">Research Overview</h2>
+            </div>
+            <div class="abstract-content fade-in">
+                Three-dimensional reconstruction from nighttime UAV imagery is hindered by the lack of training data 
+                with paired day-night observations and geometric ground truth. This paper introduces <strong>NightUAV-Sim</strong>, 
+                a synthetic benchmark dataset generated using Unreal Engine 5, providing 19,836 high-resolution images 
+                (8196×5460 pixels) with pixel-aligned imagery across six illumination conditions spanning the complete 
+                day-night cycle. The dataset includes dense geometric annotations comprising depth maps, surface normals, 
+                and camera parameters for each frame. We validate the dataset utility through a dual-source reconstruction 
+                pipeline that jointly exploits original dark images and enhanced counterparts. The dataset and code will 
+                be publicly available to support research in nighttime UAV perception and 3D reconstruction.
+            </div>
+        </div>
+    </section>
+
+    <!-- Dataset Section -->
+    <section id="dataset">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Dataset</span>
+                <h2 class="section-title">NightUAV-Sim Dataset</h2>
+                <p class="section-desc">
+                    The first synthetic benchmark designed specifically for nighttime UAV 3D reconstruction
+                </p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <h3>Pixel-Aligned Pairs</h3>
+                    <p>Perfect spatial correspondence between day and night imagery from identical camera poses, enabling supervised training.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h3>Complete Annotations</h3>
+                    <p>Per-pixel depth maps, surface normals, camera parameters, and illumination metadata for each frame.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-city"></i>
+                    </div>
+                    <h3>Diverse Urban Scene</h3>
+                    <p>2 km² photorealistic city environment with residential, commercial buildings, roads, and vegetation.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-camera-retro"></i>
+                    </div>
+                    <h3>High Resolution</h3>
+                    <p>8196×5460 pixels (~45MP) per image, supporting high-fidelity reconstruction research.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <h3>UAV Configurations</h3>
+                    <p>Nadir (551) and oblique (2,755) imaging positions with 80%/60% forward/side overlap.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <h3>Full Day-Night Cycle</h3>
+                    <p>Six illumination conditions from noon to late night covering complete diurnal variations.</p>
+                </div>
+            </div>
+
+            <!-- Illumination Conditions -->
+            <div class="section-header" style="margin-top: 80px;">
+                <h2 class="section-title">Illumination Conditions</h2>
+                <p class="section-desc">Same viewpoint rendered under six different lighting configurations</p>
+            </div>
+            <div class="illumination-grid">
+                <div class="illumination-card">
+                    <div class="illumination-img">
+                        <img src="images/01.png" alt="Noon Illumination">
+                    </div>
+                    <div class="illumination-label">Noon</div>
+                </div>
+                <div class="illumination-card">
+                    <div class="illumination-img">
+                        <img src="images/02.png" alt="Afternoon Illumination">
+                    </div>
+                    <div class="illumination-label">Afternoon</div>
+                </div>
+                <div class="illumination-card">
+                    <div class="illumination-img">
+                        <img src="images/03.png" alt="Dusk Illumination">
+                    </div>
+                    <div class="illumination-label">Dusk</div>
+                </div>
+                <div class="illumination-card">
+                    <div class="illumination-img">
+                        <img src="images/04.png" alt="Early Night Illumination">
+                    </div>
+                    <div class="illumination-label">Early Night</div>
+                </div>
+                <div class="illumination-card">
+                    <div class="illumination-img">
+                        <img src="images/05.png" alt="Late Night Illumination">
+                    </div>
+                    <div class="illumination-label">Late Night</div>
+                </div>
+                <div class="illumination-card">
+                    <div class="illumination-img">
+                        <img src="images/06.png" alt="Base Color">
+                    </div>
+                    <div class="illumination-label">Base Color</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Download</span>
+                <h2 class="section-title">Get the Data</h2>
+                <p class="section-desc">
+                    Access sample data, code, and generation tutorials
+                </p>
+            </div>
+
+            <div class="download-grid fade-in">
+                <div class="download-card">
+                    <div class="download-icon">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <h3>Code & Tools</h3>
+                    <p>Evaluation scripts and data path planning tools</p>
+                    <a href="https://github.com/rebecca0011/NightUAV-Sim" class="btn btn-primary" target="_blank">
+                        <i class="fab fa-github"></i>
+                        GitHub
+                    </a>
+                    <div class="download-size">Code</div>
+                </div>
+                <div class="download-card">
+                    <div class="download-icon">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <h3>Sample Data</h3>
+                    <p>Representative samples from each illumination</p>
+                    <a href="https://pan.baidu.com/s/1rwN37GRnvjdbcP5ramBBBA?pwd=j552" class="btn btn-secondary" target="_blank">
+                        <i class="fas fa-download"></i>
+                        Download
+                    </a>
+                    <div class="download-size">~ 1.6 GB</div>
+                </div>
+                <div class="download-card">
+                    <div class="download-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>Generation Tutorial</h3>
+                    <a href="https://pan.baidu.com/s/1rwN37GRnvjdbcP5ramBBBA?pwd=j552" class="btn btn-secondary" target="_blank">
+                        <i class="fas fa-external-link-alt"></i>
+                        Tutorial
+                    </a>
+                    <div class="download-size">Documentation</div>
+                </div>
+            </div>
+    </section>
+
+    <!-- Citation Section
+    <section id="citation">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Citation</span>
+                <h2 class="section-title">Cite Our Work</h2>
+            </div>
+
+            <div class="citation-box fade-in">
+                <button class="copy-btn" onclick="copyCitation()">
+                    <i class="fas fa-copy"></i>
+                    <span>Copy</span>
+                </button>
+                <pre>@inproceedings{author2026nightuavsim,
+  title={Reconstructing in the Dark: A Synthetic Benchmark 
+         and Pipeline for Nighttime UAV 3D Reconstruction},
+  author={Author Name},
+  booktitle={IEEE International Geoscience and Remote 
+             Sensing Symposium (IGARSS)},
+  year={2026}
+}</pre>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/rebecca0011/NightUAV-Sim" target="_blank" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="mailto:your-email@example.com" title="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+            <p class="footer-text">
+                NightUAV-Sim © 2026 | IGARSS Student Competition
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll animation
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeElements.forEach(el => observer.observe(el));
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Copy citation
+        function copyCitation() {
+            const citation = document.querySelector('.citation-box pre').textContent;
+            navigator.clipboard.writeText(citation).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.classList.add('copied');
+                btn.querySelector('span').textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.querySelector('span').textContent = 'Copy';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
