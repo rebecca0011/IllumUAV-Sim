@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NightUAV-Sim | A Synthetic Benchmark for Nighttime UAV 3D Reconstruction</title>
-    <meta name="description" content="NightUAV-Sim: The first synthetic benchmark dataset for nighttime UAV 3D reconstruction with pixel-aligned day-night pairs and complete geometric ground truth.">
+    <title>IllumUAV-Sim | A Synthetic Benchmark for  for UAV 3D Reconstruction under Varying Light Conditions</title>
+    <meta name="description" content="IllumUAV-Sim: The first synthetic benchmark dataset for UAV 3D reconstruction with pixel-aligned day-night pairs and complete geometric ground truth.">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -744,7 +744,7 @@
     <!-- Navigation -->
     <nav>
         <div class="container">
-            <div class="nav-logo">NightUAV-Sim</div>
+            <div class="nav-logo">IllumUAV-Sim</div>
             <ul class="nav-links">
                 <li><a href="#abstract">Abstract</a></li>
                 <li><a href="#dataset">Dataset</a></li>
@@ -762,11 +762,11 @@
                     IGARSS 2026 Student Competition
                 </div>
                 <h1>
-                    <span class="gradient-text">Reconstructing in the Dark</span><br>
-                    A Synthetic Benchmark for Nighttime UAV 3D Reconstruction
+                    <span class="gradient-text">Reconstructing Across Illumination</span><br>
+                    A Synthetic Benchmark for UAV 3D Reconstruction under Varying Light Conditions
                 </h1>
                 <p class="hero-subtitle">
-                    NightUAV-Sim provides 19,836 high-resolution images with pixel-aligned day-night pairs 
+                    IllumUAV-Sim provides 19,836 high-resolution images with pixel-aligned day-night pairs 
                     and complete geometric ground truth for advancing nighttime UAV perception research.
                 </p>
                 <div class="hero-buttons">
@@ -774,7 +774,7 @@
                         <i class="fas fa-download"></i>
                         Download Dataset
                     </a>
-                    <a href="https://github.com/rebecca0011/NightUAV-Sim" class="btn btn-secondary" target="_blank">
+                    <a href="https://github.com/rebecca0011/IllumUAV-Sim" class="btn btn-secondary" target="_blank">
                         <i class="fab fa-github"></i>
                         View on GitHub
                     </a>
@@ -810,14 +810,8 @@
                 <h2 class="section-title">Research Overview</h2>
             </div>
             <div class="abstract-content fade-in">
-                Three-dimensional reconstruction from nighttime UAV imagery is hindered by the lack of training data 
-                with paired day-night observations and geometric ground truth. This paper introduces <strong>NightUAV-Sim</strong>, 
-                a synthetic benchmark dataset generated using Unreal Engine 5, providing 19,836 high-resolution images 
-                (8196×5460 pixels) with pixel-aligned imagery across six illumination conditions spanning the complete 
-                day-night cycle. The dataset includes dense geometric annotations comprising depth maps, surface normals, 
-                and camera parameters for each frame. We validate the dataset utility through a dual-source reconstruction 
-                pipeline that jointly exploits original dark images and enhanced counterparts. The dataset and code will 
-                be publicly available to support research in nighttime UAV perception and 3D reconstruction.
+                IllumUAV-Sim is a high-fidelity synthetic benchmark designed for UAV 3D reconstruction under diverse illumination conditions.
+                Built with Unreal Engine 5, the dataset provides 19,836 high-resolution images (8196×5460 pixels) with pixel-aligned views captured under six distinct lighting conditions that span the full day–night cycle. Each frame is annotated with dense geometric ground truth, including depth maps, surface normals, and camera parameters. By offering comprehensive coverage of illumination variation and accurate geometric annotations, IllumUAV-Sim enables robust evaluation and training of methods for low-light UAV perception and 3D reconstruction.
             </div>
         </div>
     </section>
@@ -827,9 +821,9 @@
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Dataset</span>
-                <h2 class="section-title">NightUAV-Sim Dataset</h2>
+                <h2 class="section-title">IllumUAV-Sim Dataset</h2>
                 <p class="section-desc">
-                    The first synthetic benchmark designed specifically for nighttime UAV 3D reconstruction
+                    The first synthetic benchmark designed specifically for UAV 3D reconstruction under Varying Light Conditions
                 </p>
             </div>
 
@@ -853,7 +847,7 @@
                         <i class="fas fa-city"></i>
                     </div>
                     <h3>Diverse Urban Scene</h3>
-                    <p>2 km² photorealistic city environment with residential, commercial buildings, roads, and vegetation.</p>
+                    <p>2 km² photorealistic city environment with residential, commercial buildings, roads, and Highway network.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
@@ -942,7 +936,7 @@
                     </div>
                     <h3>Code & Tools</h3>
                     <p>Evaluation scripts and data path planning tools</p>
-                    <a href="https://github.com/rebecca0011/NightUAV-Sim/Planning" class="btn btn-primary" target="_blank">
+                    <a href="https://github.com/rebecca0011/IllumUAV-Sim/Planning" class="btn btn-primary" target="_blank">
                         <i class="fab fa-github"></i>
                         GitHub
                     </a>
@@ -966,7 +960,7 @@
                     </div>
                     <h3>Generation Tutorial</h3>
                     <p>Tutorial to generate data</p>
-                    <a href="https://github.com/rebecca0011/NightUAV-Sim/Tutorial" class="btn btn-secondary" target="_blank">
+                    <a href="https://github.com/rebecca0011/IllumUAV-Sim/Tutorial" class="btn btn-secondary" target="_blank">
                         <i class="fas fa-external-link-alt"></i>
                         Tutorial
                     </a>
@@ -975,36 +969,12 @@
             </div>
     </section>
 
-    <!-- Citation Section
-    <section id="citation">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Citation</span>
-                <h2 class="section-title">Cite Our Work</h2>
-            </div>
-
-            <div class="citation-box fade-in">
-                <button class="copy-btn" onclick="copyCitation()">
-                    <i class="fas fa-copy"></i>
-                    <span>Copy</span>
-                </button>
-                <pre>@inproceedings{author2026nightuavsim,
-  title={Reconstructing in the Dark: A Synthetic Benchmark 
-         and Pipeline for Nighttime UAV 3D Reconstruction},
-  author={Author Name},
-  booktitle={IEEE International Geoscience and Remote 
-             Sensing Symposium (IGARSS)},
-  year={2026}
-}</pre>
-            </div>
-        </div>
-    </section> -->
 
     <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-links">
-                <a href="https://github.com/rebecca0011/NightUAV-Sim" target="_blank" title="GitHub">
+                <a href="https://github.com/rebecca0011/IllumUAV-Sim" target="_blank" title="GitHub">
                     <i class="fab fa-github"></i>
                 </a>
                 <a href="mailto:your-email@example.com" title="Email">
@@ -1012,7 +982,7 @@
                 </a>
             </div>
             <p class="footer-text">
-                NightUAV-Sim © 2026 | IGARSS Student Competition
+                IllumUAV-Sim © 2026 | IGARSS Student Competition
             </p>
         </div>
     </footer>
